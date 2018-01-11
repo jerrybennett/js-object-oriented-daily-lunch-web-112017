@@ -2,7 +2,6 @@ let store = {customers: [], employers: [], meals: [], deliveries: []}
 
 let customerId = 0;
 class Customer {
-
   constructor(name, employer) {
     this.name = name;
     this.employer = employer;
@@ -18,11 +17,15 @@ class Customer {
   }
 
   meals() {
-
+    return store.meals.filter(meal => {
+      return meal.customerId === this.id;
+    });
   }
 
   deliveries() {
-
+    return store.deliveries.filter(delivery => {
+      return delivery.customerId === this.id;
+    });
   }
 
   totalSpent() {
@@ -37,7 +40,6 @@ class Employer {
     this.id = ++employerId;
     store.employers.push(this);
   }
-
 
   employees() {
     return store.customers.filter(customer => {
@@ -73,13 +75,19 @@ class Meal {
 
   deliveries() {
     return store.deliveries.filter(delivery => {
-      return delivery.mealId === this.id
-    })
+      return delivery.mealId === this.id;
+    });
   }
 
   customers() {
     return store.customers.filter(customer => {
-      return customer.mealId === this.id
+      return customer.meals().includes(this);
+    });
+  }
+
+  employers() {
+    return store.employers.filter(employer => {
+      return employer.mealId === this.id
     })
   }
 }
@@ -87,8 +95,7 @@ class Meal {
 let deliveryId = 0;
 class Delivery {
   constructor(meal, customer) {
-    this.meal = meal;
-    this.customer = customer;
+
     this.id = ++deliveryId;
     store.deliveries.push(this);
     if(meal) {
@@ -101,7 +108,7 @@ class Delivery {
   }
 
   setMeal() {
-    this.mealId = meal.id
+    this.mealId = meal.id;
   }
 
   setCustomer() {
@@ -110,13 +117,13 @@ class Delivery {
 
   meal() {
     return store.meals.find(function(meal){
-      return meal.id === this.mealId
-    })
+      return meal.id === this.mealId;
+    }.bind(this));
   }
 
   customer() {
     return store.customers.find(function(customer){
-      return customer.id === this.customerId
-    })
+      return customer.id === this.customerId;
+    }.bind(this));
   }
 }
